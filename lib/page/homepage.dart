@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,6 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FlutterBlue flutterBlue = FlutterBlue.instance;
   bool check = false;
   @override
   Widget build(BuildContext context) {
@@ -59,9 +62,13 @@ class _HomePageState extends State<HomePage> {
             if (check == false) {
               _checked(true);
               check = true;
+              // _blescan();
+              Get.toNamed("/bluetooth");
             } else {
               _checked(0);
               check = false;
+              // Stop scanning
+              // flutterBlue.stopScan();
             }
           });
         },
@@ -90,5 +97,18 @@ class _HomePageState extends State<HomePage> {
     } else {
       return null;
     }
+  }
+
+  _blescan() {
+    // Start scanning
+    flutterBlue.startScan(timeout: Duration(seconds: 4));
+
+    // Listen to scan results
+    var subscription = flutterBlue.scanResults.listen((results) {
+      // do something with scan results
+      for (ScanResult r in results) {
+        print('${r.device.name} found! rssi: ${r.rssi}');
+      }
+    });
   }
 }
