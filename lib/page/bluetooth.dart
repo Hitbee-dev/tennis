@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'widgets.dart';
 
 class Bluetooth extends StatelessWidget {
   @override
@@ -101,19 +102,19 @@ class FindDevicesScreen extends StatelessWidget {
                 stream: FlutterBlue.instance.scanResults,
                 initialData: [],
                 builder: (c, snapshot) => Column(
-                    // children: snapshot.data!
-                    //     .map(
-                    //       (r) => ScanResultTile(
-                    //         result: r,
-                    //         onTap: () => Navigator.of(context)
-                    //             .push(MaterialPageRoute(builder: (context) {
-                    //           r.device.connect();
-                    //           return DeviceScreen(device: r.device);
-                    //         })),
-                    //       ),
-                    //     )
-                    //     .toList(),
-                    ),
+                  children: snapshot.data!
+                      .map(
+                        (r) => ScanResultTile(
+                          result: r,
+                          onTap: () => Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            r.device.connect();
+                            return DeviceScreen(device: r.device);
+                          })),
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ],
           ),
@@ -156,40 +157,40 @@ class DeviceScreen extends StatelessWidget {
     ];
   }
 
-  // List<Widget> _buildServiceTiles(List<BluetoothService> services) {
-  //   return services
-  //       .map(
-  //         (s) => ServiceTile(
-  //           service: s,
-  //           characteristicTiles: s.characteristics
-  //               .map(
-  //                 (c) => CharacteristicTile(
-  //                   characteristic: c,
-  //                   onReadPressed: () => c.read(),
-  //                   onWritePressed: () async {
-  //                     await c.write(_getRandomBytes(), withoutResponse: true);
-  //                     await c.read();
-  //                   },
-  //                   onNotificationPressed: () async {
-  //                     await c.setNotifyValue(!c.isNotifying);
-  //                     await c.read();
-  //                   },
-  //                   descriptorTiles: c.descriptors
-  //                       .map(
-  //                         (d) => DescriptorTile(
-  //                           descriptor: d,
-  //                           onReadPressed: () => d.read(),
-  //                           onWritePressed: () => d.write(_getRandomBytes()),
-  //                         ),
-  //                       )
-  //                       .toList(),
-  //                 ),
-  //               )
-  //               .toList(),
-  //         ),
-  //       )
-  //       .toList();
-  // }
+  List<Widget> _buildServiceTiles(List<BluetoothService> services) {
+    return services
+        .map(
+          (s) => ServiceTile(
+            service: s,
+            characteristicTiles: s.characteristics
+                .map(
+                  (c) => CharacteristicTile(
+                    characteristic: c,
+                    onReadPressed: () => c.read(),
+                    onWritePressed: () async {
+                      await c.write(_getRandomBytes(), withoutResponse: true);
+                      await c.read();
+                    },
+                    onNotificationPressed: () async {
+                      await c.setNotifyValue(!c.isNotifying);
+                      await c.read();
+                    },
+                    descriptorTiles: c.descriptors
+                        .map(
+                          (d) => DescriptorTile(
+                            descriptor: d,
+                            onReadPressed: () => d.read(),
+                            onWritePressed: () => d.write(_getRandomBytes()),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                )
+                .toList(),
+          ),
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,8 +286,8 @@ class DeviceScreen extends StatelessWidget {
               initialData: [],
               builder: (c, snapshot) {
                 return Column(
-                    // children: _buildServiceTiles(snapshot.data!),
-                    );
+                  children: _buildServiceTiles(snapshot.data!),
+                );
               },
             ),
           ],

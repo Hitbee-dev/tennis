@@ -1,3 +1,4 @@
+#include <SoftwareSerial.h>
 #include <Servo.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -35,6 +36,7 @@ unsigned long time2=0;
 
 void setup() {
   Serial.begin(9600);
+  Serial1.begin(9600);
   underservo.attach(22);
   leftservo.attach(23);
   rightservo.attach(24);
@@ -59,11 +61,19 @@ void setup() {
   analogWrite(gearedmotor,0);
   analogWrite(motorA,0);
   analogWrite(motorB,0);
-  lcd.init();
+//  lcd.init();
   lcd.backlight();
 }
 
 void loop() {
+  if(Serial1.available()){
+    Serial.write(Serial1.read());
+  }
+  if(Serial.available()){
+    Serial1.write(Serial.read());
+//    Serial1.println("input test2");
+  }
+  
   if(digitalRead(pinA)==0){
     digitalWrite(ledA,HIGH);
     Serial.println("reset");

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -62,13 +63,14 @@ class _HomePageState extends State<HomePage> {
             if (check == false) {
               _checked(true);
               check = true;
-              // _blescan();
+              // _blescan(true);
               Get.toNamed("/bluetooth");
             } else {
-              _checked(0);
+              _checked(false);
               check = false;
               // Stop scanning
               // flutterBlue.stopScan();
+              // _blescan(false);
             }
           });
         },
@@ -99,16 +101,28 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  _blescan() {
-    // Start scanning
-    flutterBlue.startScan(timeout: Duration(seconds: 4));
+  _blescan(cnt) {
+    if (cnt == true) {
+      flutterBlue.startScan(timeout: Duration(seconds: 4));
 
-    // Listen to scan results
-    var subscription = flutterBlue.scanResults.listen((results) {
-      // do something with scan results
-      for (ScanResult r in results) {
-        print('${r.device.name} found! rssi: ${r.rssi}');
-      }
-    });
+      // Listen to scan results
+      var subscription = flutterBlue.scanResults.listen((results) {
+        // do something with scan results
+        for (ScanResult r in results) {
+          print('${r.device.name} found! rssi: ${r.rssi}');
+          r.device.connect();
+        }
+      });
+    } else {
+      ScanResult result;
+      var subscription = flutterBlue.scanResults.listen((results) {
+        // do something with scan results
+        for (ScanResult r in results) {
+          r.device.disconnect();
+        }
+      });
+    }
+
+    // Start scanning
   }
 }
