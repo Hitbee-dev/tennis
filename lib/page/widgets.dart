@@ -133,38 +133,33 @@ class ServiceTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Service'),
-            Text(
-              '0x${service.uuid.toString().toUpperCase().substring(4, 8)}',
-            )
+            Text('Menu'),
           ],
         ),
         children: characteristicTiles,
       );
     } else {
-      return ListTile(
-        title: Text('Service'),
-        subtitle:
-            Text('0x${service.uuid.toString().toUpperCase().substring(4, 8)}'),
-      );
+      return ListTile(title: Text('Menu'));
     }
   }
 }
 
 class CharacteristicTile extends StatelessWidget {
   final BluetoothCharacteristic characteristic;
-  final List<DescriptorTile> descriptorTiles;
   final VoidCallback? onReadPressed;
-  final VoidCallback? onWritePressed;
-  final VoidCallback? onNotificationPressed;
+  final VoidCallback? onWriteReset;
+  final VoidCallback? onWriteLevel1;
+  final VoidCallback? onWriteLevel2;
+  final VoidCallback? onWriteLevel3;
 
   const CharacteristicTile(
       {Key? key,
       required this.characteristic,
-      required this.descriptorTiles,
       this.onReadPressed,
-      this.onWritePressed,
-      this.onNotificationPressed})
+      this.onWriteReset,
+      this.onWriteLevel1,
+      this.onWriteLevel2,
+      this.onWriteLevel3})
       : super(key: key);
 
   @override
@@ -173,52 +168,43 @@ class CharacteristicTile extends StatelessWidget {
       stream: characteristic.value,
       initialData: characteristic.lastValue,
       builder: (c, snapshot) {
-        final value = snapshot.data;
-        return ExpansionTile(
-          title: ListTile(
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Characteristic'),
-                Text(
-                  '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}',
-                )
-              ],
-            ),
-            subtitle: Text(value.toString()),
-            contentPadding: EdgeInsets.all(0.0),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.file_download,
-                  color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                ),
-                onPressed: onReadPressed,
-              ),
-              IconButton(
-                icon: Icon(Icons.file_upload,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
-                onPressed: onWritePressed,
-              ),
-              IconButton(
-                icon: Icon(
-                    characteristic.isNotifying
-                        ? Icons.sync_disabled
-                        : Icons.sync,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
-                onPressed: onNotificationPressed,
-              )
-            ],
-          ),
-          children: descriptorTiles,
+        return Column(
+          children: <Widget>[
+            _lists("Reset", "1", context, onWriteReset),
+            _lists("Level1", "2", context, onWriteLevel1),
+            _lists("Level2", "3", context, onWriteLevel2),
+            _lists("Level3", "4", context, onWriteLevel3),
+          ],
         );
       },
     );
   }
+}
+
+Widget _lists(name, value, context, onWritePressed) {
+  return ExpansionTile(
+    title: ListTile(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(name),
+          ],
+        ),
+        subtitle: Text(value.toString()),
+        contentPadding: EdgeInsets.all(0.0)),
+    trailing: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.send,
+              color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+          onPressed: onWritePressed,
+        ),
+      ],
+    ),
+    // children: descriptorTiles,
+  );
 }
 
 class DescriptorTile extends StatelessWidget {

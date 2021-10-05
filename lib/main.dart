@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tennis/page/bluetooth.dart';
-import 'package:tennis/page/homepage.dart';
 
 void main() {
   runApp(Tennis());
@@ -20,10 +19,6 @@ class Tennis extends StatelessWidget {
       getPages: [
         GetPage(
             name: "/",
-            page: () => HomePage(),
-            transition: Transition.cupertinoDialog),
-        GetPage(
-            name: "/bluetooth",
             page: () => Bluetooth(),
             transition: Transition.cupertinoDialog),
       ],

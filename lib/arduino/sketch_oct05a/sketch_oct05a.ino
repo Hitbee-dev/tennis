@@ -66,15 +66,17 @@ void setup() {
 }
 
 void loop() {
+  char temp = ' ';
   if(Serial1.available()){
-    Serial.write(Serial1.read());
+    //Serial.write(Serial1.read());
+    temp = Serial1.read();
+    Serial.print(temp);
   }
   if(Serial.available()){
     Serial1.write(Serial.read());
-//    Serial1.println("input test2");
   }
   
-  if(digitalRead(pinA)==0){
+  if(digitalRead(pinA)==0||temp=='e'){
     digitalWrite(ledA,HIGH);
     Serial.println("reset");
     a=false;
@@ -84,7 +86,7 @@ void loop() {
     delay(1000);
     digitalWrite(ledA,LOW);
   }
-  else if(digitalRead(pinB)==0){
+  else if(digitalRead(pinB)==0||temp=='f'){
     digitalWrite(ledB,HIGH);
     Serial.println("level1");
     a=true;
@@ -94,7 +96,7 @@ void loop() {
     delay(1000);
     digitalWrite(ledB,LOW);
   }
-  else if(digitalRead(pinC)==0){
+  else if(digitalRead(pinC)==0||temp=='g'){
     digitalWrite(ledC,HIGH);
     Serial.println("level2");
     a=true;
@@ -104,7 +106,7 @@ void loop() {
     delay(1000);
     digitalWrite(ledC,LOW);
   }
-  else if(digitalRead(pinD)==0){
+  else if(digitalRead(pinD)==0||temp=='h'){
     digitalWrite(ledD,HIGH);
     Serial.println("level3");
     a=true;
@@ -130,7 +132,7 @@ void loop() {
       rightservo.write(rightangle);
       analogWrite(motorA,0);
       analogWrite(motorB,0);
-      if(digitalRead(pinB)==0|digitalRead(pinC)==0|digitalRead(pinD)==0){
+      if(digitalRead(pinB)==0|digitalRead(pinC)==0|digitalRead(pinD)==0||Serial1.read()=='f'||Serial1.read()=='g'||Serial1.read()=='h'){
         a=true;
       }
     }
@@ -155,7 +157,7 @@ void loop() {
         analogWrite(motorA,x);
         analogWrite(motorB,x);
       }
-      if(digitalRead(pinA)==0|digitalRead(pinC)==0|digitalRead(pinD)==0){
+      if(digitalRead(pinA)==0|digitalRead(pinC)==0|digitalRead(pinD)==0||Serial1.read()=='e'||Serial1.read()=='g'||Serial1.read()=='h'){
         b=true;
       }
     }
@@ -180,7 +182,7 @@ void loop() {
         analogWrite(motorA,y);
         analogWrite(motorB,y);
       }
-      if(digitalRead(pinA)==0|digitalRead(pinB)==0|digitalRead(pinD)==0){
+      if(digitalRead(pinA)==0|digitalRead(pinB)==0|digitalRead(pinD)==0||Serial1.read()=='e'||Serial1.read()=='f'||Serial1.read()=='h'){
         c=true;
       }
     }
@@ -205,7 +207,7 @@ void loop() {
         analogWrite(motorA,z);
         analogWrite(motorB,z);
       }
-      if(digitalRead(pinA)==0|digitalRead(pinB)==0|digitalRead(pinC)==0){
+      if(digitalRead(pinA)==0|digitalRead(pinB)==0|digitalRead(pinC)==0||Serial1.read()=='e'||Serial1.read()=='f'||Serial1.read()=='g'){
         d=true;
       }
     }

@@ -12,7 +12,8 @@ class Bluetooth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: Colors.lightBlue,
+      debugShowCheckedModeBanner: false,
+      color: Colors.amber,
       home: StreamBuilder<BluetoothState>(
           stream: FlutterBlue.instance.state,
           initialData: BluetoothState.unknown,
@@ -35,7 +36,7 @@ class BluetoothOffScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.amber,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -60,7 +61,11 @@ class FindDevicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find Devices'),
+        backgroundColor: Colors.amber,
+        title: Text(
+          'Tennis Ball Shooting App',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () =>
@@ -132,9 +137,11 @@ class FindDevicesScreen extends StatelessWidget {
             );
           } else {
             return FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () => FlutterBlue.instance
-                    .startScan(timeout: Duration(seconds: 4)));
+              child: Icon(Icons.search),
+              onPressed: () =>
+                  FlutterBlue.instance.startScan(timeout: Duration(seconds: 4)),
+              backgroundColor: Colors.amber,
+            );
           }
         },
       ),
@@ -167,23 +174,26 @@ class DeviceScreen extends StatelessWidget {
                   (c) => CharacteristicTile(
                     characteristic: c,
                     onReadPressed: () => c.read(),
-                    onWritePressed: () async {
-                      await c.write(_getRandomBytes(), withoutResponse: true);
+                    onWriteReset: () async {
+                      //101=e, 102=f, 103=g, 104=h
+                      await c.write([101], withoutResponse: true);
                       await c.read();
                     },
-                    onNotificationPressed: () async {
-                      await c.setNotifyValue(!c.isNotifying);
+                    onWriteLevel1: () async {
+                      //101=e, 102=f, 103=g, 104=h
+                      await c.write([102], withoutResponse: true);
                       await c.read();
                     },
-                    descriptorTiles: c.descriptors
-                        .map(
-                          (d) => DescriptorTile(
-                            descriptor: d,
-                            onReadPressed: () => d.read(),
-                            onWritePressed: () => d.write(_getRandomBytes()),
-                          ),
-                        )
-                        .toList(),
+                    onWriteLevel2: () async {
+                      //101=e, 102=f, 103=g, 104=h
+                      await c.write([103], withoutResponse: true);
+                      await c.read();
+                    },
+                    onWriteLevel3: () async {
+                      //101=e, 102=f, 103=g, 104=h
+                      await c.write([104], withoutResponse: true);
+                      await c.read();
+                    },
                   ),
                 )
                 .toList(),
@@ -196,7 +206,11 @@ class DeviceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(device.name),
+        title: Text(
+          device.name,
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.amber,
         actions: <Widget>[
           StreamBuilder<BluetoothDeviceState>(
             stream: device.state,
@@ -225,7 +239,7 @@ class DeviceScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .primaryTextTheme
                         .button
-                        ?.copyWith(color: Colors.white),
+                        ?.copyWith(color: Colors.black),
                   ));
             },
           )
@@ -251,7 +265,7 @@ class DeviceScreen extends StatelessWidget {
                     index: snapshot.data! ? 1 : 0,
                     children: <Widget>[
                       IconButton(
-                        icon: Icon(Icons.refresh),
+                        icon: Icon(Icons.settings),
                         onPressed: () => device.discoverServices(),
                       ),
                       IconButton(
@@ -266,18 +280,6 @@ class DeviceScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                ),
-              ),
-            ),
-            StreamBuilder<int>(
-              stream: device.mtu,
-              initialData: 0,
-              builder: (c, snapshot) => ListTile(
-                title: Text('MTU Size'),
-                subtitle: Text('${snapshot.data} bytes'),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => device.requestMtu(223),
                 ),
               ),
             ),
