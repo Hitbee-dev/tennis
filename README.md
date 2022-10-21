@@ -14,11 +14,6 @@ https://user-images.githubusercontent.com/83276163/150948682-16389f74-77db-4f9f-
 ![공학페스티벌_원격 테니스공 자동발사기_금상](https://user-images.githubusercontent.com/83276163/150948966-188618f6-6234-4197-ae59-c2d12339b38a.png)
 
 
-## 캡스톤디자인 경진대회 우수상
-![캡스톤디자인 경진대회_원격 테니스공 자동발사기_우수상](https://user-images.githubusercontent.com/83276163/150949027-d287dca0-6860-40e3-b0ee-ca6f91b1563d.jpg)
-
-
-
 ### Arduino
 * 데이터 받는 부분
 
